@@ -1,0 +1,39 @@
+// Flex
+@mixin display-flex(
+  $flex-direction: row,
+  $justify-content: center,
+  $align-items: center
+) {
+  display: flex;
+  flex-direction: $flex-direction;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+// Position
+@mixin position(
+  $position: relative,
+  $top: auto,
+  $right: auto,
+  $bottom: auto,
+  $left: auto
+) {
+  position: $position;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+// circle
+@mixin circle($size) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+}
+
+// border-view
+@mixin border-view($width, $display: solid ,$color, $radius: 0) {
+  border: $width $display $color;
+  border-radius: $radius;
+}
