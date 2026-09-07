@@ -162,9 +162,11 @@ const Dashboard = () => {
                     <h6 className="mb-1">Booked: Inception</h6>
                     <p className="text-muted mb-0">Today at 2:30 PM</p>
                   </div>
-                  <Button variant="outline-primary" size="sm">
-                    View Details
-                  </Button>
+                  <Link to="/dashboard/bookings">
+                    <Button variant="outline-primary" size="sm">
+                      View Details
+                    </Button>
+                  </Link>
                 </div>
                 <div className="d-flex align-items-center mb-3 pb-3 border-bottom">
                   <div className="me-3">
@@ -174,9 +176,11 @@ const Dashboard = () => {
                     <h6 className="mb-1">Added to Favorites: The Dark Knight</h6>
                     <p className="text-muted mb-0">Yesterday at 5:15 PM</p>
                   </div>
-                  <Button variant="outline-primary" size="sm">
-                    View Movie
-                  </Button>
+                  <Link to="/movie/2">
+                    <Button variant="outline-primary" size="sm">
+                      View Movie
+                    </Button>
+                  </Link>
                 </div>
                 <div className="d-flex align-items-center">
                   <div className="me-3">
@@ -186,9 +190,11 @@ const Dashboard = () => {
                     <h6 className="mb-1">Booking Confirmed: Interstellar</h6>
                     <p className="text-muted mb-0">2 days ago</p>
                   </div>
-                  <Button variant="outline-primary" size="sm">
-                    View Ticket
-                  </Button>
+                  <Link to="/dashboard/bookings">
+                    <Button variant="outline-primary" size="sm">
+                      View Ticket
+                    </Button>
+                  </Link>
                 </div>
               </Card.Body>
             </Card>
