@@ -1,78 +1,63 @@
-// Reset Password Page - Similar to Angular Component
-// Handles password reset with token
-
 import { useState } from 'react';
-import { Form, Button, Card, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Alert, Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
-import { isValidPassword, doPasswordsMatch } from '../authUtils';
+import { doPasswordsMatch, isValidPassword } from '../authUtils';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token') || '';
-
-  // Form state - Similar to Angular Reactive Forms
-  const [formData, setFormData] = useState({
-    password: '',
-    confirmPassword: '',
-  });
-
-  // UI state
+  const [formData, setFormData] = useState({ email: '', otp: '', newPassword: '', confirmPassword: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [validationErrors, setValidationErrors] = useState({
-    password: '',
+    email: '',
+    otp: '',
+    newPassword: '',
     confirmPassword: '',
   });
 
-  // Handle input changes - Similar to Angular form control updates
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((previous) => ({ ...previous, [name]: value }));
 
-    // Clear validation error when user starts typing
     if (validationErrors[name as keyof typeof validationErrors]) {
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: '',
-      }));
+      setValidationErrors((previous) => ({ ...previous, [name]: '' }));
     }
 
-    // Clear general error when user starts typing
     if (error) {
       setError('');
     }
   };
 
-  // Validate form
-  const validateForm = (): boolean => {
-    const errors = {
-      password: '',
-      confirmPassword: '',
-    };
+  const validateForm = () => {
+    const errors = { email: '', otp: '', newPassword: '', confirmPassword: '' };
     let isValid = true;
 
-    // Password validation
-    if (!formData.password) {
-      errors.password = 'Password is required';
-      isValid = false;
-    } else if (!isValidPassword(formData.password)) {
-      errors.password = 'Password must be at least 8 characters';
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
       isValid = false;
     }
 
-    // Confirm password validation
+    if (!formData.otp || formData.otp.length !== 4 || !/^\d{4}$/.test(formData.otp)) {
+      errors.otp = 'OTP must be exactly 4 digits';
+      isValid = false;
+    }
+
+    if (!formData.newPassword) {
+      errors.newPassword = 'Password is required';
+      isValid = false;
+    } else if (!isValidPassword(formData.newPassword)) {
+      errors.newPassword = 'Password must be at least 8 characters';
+      isValid = false;
+    }
+
     if (!formData.confirmPassword) {
       errors.confirmPassword = 'Please confirm your password';
       isValid = false;
-    } else if (!doPasswordsMatch(formData.password, formData.confirmPassword)) {
+    } else if (!doPasswordsMatch(formData.newPassword, formData.confirmPassword)) {
       errors.confirmPassword = 'Passwords do not match';
       isValid = false;
     }
@@ -81,17 +66,10 @@ const ResetPassword = () => {
     return isValid;
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-    // Validate form before submission
     if (!validateForm()) {
-      return;
-    }
-
-    if (!token) {
-      setError('Invalid or expired reset token. Please request a new password reset.');
       return;
     }
 
@@ -99,157 +77,120 @@ const ResetPassword = () => {
     setError('');
     setSuccess(false);
 
-    try {
-      const response = await authService.resetPassword({
-        token,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      });
+    const response = await authService.resetPassword({
+      email: formData.email,
+      otp: formData.otp,
+      newPassword: formData.newPassword,
+      confirmPassword: formData.confirmPassword,
+    });
 
-      if (response.success) {
-        setSuccess(true);
-      } else {
-        setError(response.message || 'Failed to reset password. Please try again.');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+    if (response.success) {
+      setSuccess(true);
+    } else {
+      setError(response.message || 'Failed to reset password.');
     }
+
+    setLoading(false);
   };
 
   return (
     <Container className="py-5">
       <Row className="justify-content-center">
         <Col md={6} lg={5}>
-          <Card className="shadow">
-            <Card.Body className="p-4">
+          <Card className="shadow-sm border-0">
+            <Card.Body className="p-4 p-md-5">
               <div className="text-center mb-4">
-                <h2 className="fw-bold">Reset Password</h2>
-                <p className="text-muted">
-                  {success
-                    ? 'Password reset successfully'
-                    : 'Create a new password for your account'}
-                </p>
+                <h2 className="fw-bold mb-1">Reset password</h2>
+                <p className="text-muted mb-0">Set a new password using your OTP</p>
               </div>
 
-              {/* Success Alert */}
-              {success && (
-                <Alert variant="success" className="mb-3">
-                  Your password has been reset successfully. You can now log in with your new password.
-                </Alert>
-              )}
-
-              {/* Error Alert */}
-              {error && (
-                <Alert variant="danger" className="mb-3">
-                  {error}
-                </Alert>
-              )}
+              {success && <Alert variant="success">Your password has been reset successfully.</Alert>}
+              {error && <Alert variant="danger">{error}</Alert>}
 
               {!success ? (
-                <Form onSubmit={handleSubmit}>
-                  {/* Password Field */}
+                <Form onSubmit={handleSubmit} noValidate>
                   <Form.Group className="mb-3">
-                    <Form.Label htmlFor="password">New Password</Form.Label>
+                    <Form.Label htmlFor="email">Email</Form.Label>
+                    <Form.Control
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      isInvalid={!!validationErrors.email}
+                      disabled={loading}
+                    />
+                    <Form.Control.Feedback type="invalid">{validationErrors.email}</Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label htmlFor="otp">OTP</Form.Label>
+                    <Form.Control
+                      id="otp"
+                      name="otp"
+                      value={formData.otp}
+                      onChange={handleInputChange}
+                      isInvalid={!!validationErrors.otp}
+                      disabled={loading}
+                      maxLength={4}
+                      inputMode="numeric"
+                    />
+                    <Form.Control.Feedback type="invalid">{validationErrors.otp}</Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label htmlFor="newPassword">New password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
-                        id="password"
-                        name="password"
+                        id="newPassword"
+                        name="newPassword"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter new password"
-                        value={formData.password}
+                        value={formData.newPassword}
                         onChange={handleInputChange}
-                        isInvalid={!!validationErrors.password}
+                        isInvalid={!!validationErrors.newPassword}
                         disabled={loading}
                       />
-                      <Button
-                        variant="link"
-                        className="position-absolute top-0 end-0"
-                        style={{ transform: 'translateY(-50%)' }}
-                        onClick={() => setShowPassword(!showPassword)}
-                        tabIndex={-1}
-                      >
+                      <Button type="button" variant="link" className="position-absolute top-0 end-0" onClick={() => setShowPassword((value) => !value)}>
                         {showPassword ? 'Hide' : 'Show'}
                       </Button>
                     </div>
-                    <Form.Control.Feedback type="invalid">
-                      {validationErrors.password}
-                    </Form.Control.Feedback>
-                    <Form.Text className="text-muted">
-                      Must be at least 8 characters
-                    </Form.Text>
+                    <Form.Control.Feedback type="invalid">{validationErrors.newPassword}</Form.Control.Feedback>
                   </Form.Group>
 
-                  {/* Confirm Password Field */}
-                  <Form.Group className="mb-3">
-                    <Form.Label htmlFor="confirmPassword">Confirm New Password</Form.Label>
+                  <Form.Group className="mb-4">
+                    <Form.Label htmlFor="confirmPassword">Confirm password</Form.Label>
                     <div className="position-relative">
                       <Form.Control
                         id="confirmPassword"
                         name="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="Confirm new password"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
                         isInvalid={!!validationErrors.confirmPassword}
                         disabled={loading}
                       />
-                      <Button
-                        variant="link"
-                        className="position-absolute top-0 end-0"
-                        style={{ transform: 'translateY(-50%)' }}
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        tabIndex={-1}
-                      >
+                      <Button type="button" variant="link" className="position-absolute top-0 end-0" onClick={() => setShowConfirmPassword((value) => !value)}>
                         {showConfirmPassword ? 'Hide' : 'Show'}
                       </Button>
                     </div>
-                    <Form.Control.Feedback type="invalid">
-                      {validationErrors.confirmPassword}
-                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">{validationErrors.confirmPassword}</Form.Control.Feedback>
                   </Form.Group>
 
-                  {/* Submit Button */}
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100 mb-3"
-                    disabled={loading}
-                  >
+                  <Button type="submit" variant="primary" className="w-100" disabled={loading}>
                     {loading ? (
                       <>
-                        <Spinner
-                          as="span"
-                          animation="border"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
-                          className="me-2"
-                        />
+                        <Spinner animation="border" size="sm" className="me-2" />
                         Resetting...
                       </>
                     ) : (
-                      'Reset Password'
+                      'Reset password'
                     )}
                   </Button>
-
-                  {/* Back to Login Link */}
-                  <div className="text-center">
-                    <Link to="/login" className="text-decoration-none">
-                      Back to Login
-                    </Link>
-                  </div>
                 </Form>
               ) : (
-                <div className="text-center">
-                  <Button
-                    variant="primary"
-                    className="w-100 mb-3"
-                    onClick={() => navigate('/login')}
-                  >
-                    Go to Login
-                  </Button>
+                <div className="d-grid gap-2">
+                  <Button variant="primary" onClick={() => navigate('/login')}>Go to login</Button>
+                  <Link to="/forgot-password" className="btn btn-outline-secondary">Request another code</Link>
                 </div>
               )}
             </Card.Body>

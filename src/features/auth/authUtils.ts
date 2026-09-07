@@ -1,40 +1,13 @@
-// Authentication utilities - Helper functions for auth-related operations
-// Similar to Angular services/utils
+import { authService, type AuthUser } from './services/authService';
 
-import { authService } from './services/authService';
-
-// Check if user is authenticated
-export const isAuthenticated = (): boolean => {
-  return authService.isAuthenticated();
+export const isAuthenticated = (): boolean => authService.isAuthenticated();
+export const getToken = (): string | null => authService.getToken();
+export const getCurrentUser = (): AuthUser | null => authService.getUser();
+export const getRefreshToken = (): string | null => authService.getRefreshToken();
+export const logout = async (): Promise<void> => { await authService.logout(); };
+export const hasRole = (role: 'user' | 'owner' | 'admin'): boolean => {
+  return getCurrentUser()?.role === role;
 };
-
-// Get authentication token
-export const getToken = (): string | null => {
-  return authService.getToken();
-};
-
-// Get current user
-export const getCurrentUser = (): any => {
-  return authService.getUser();
-};
-
-// Logout user
-export const logout = (): void => {
-  authService.logout();
-};
-
-// Email validation regex
-export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-// Password validation
-export const isValidPassword = (password: string): boolean => {
-  return password.length >= 8;
-};
-
-// Password match validation
-export const doPasswordsMatch = (password: string, confirmPassword: string): boolean => {
-  return password === confirmPassword;
-};
+export const isValidEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const isValidPassword = (password: string): boolean => password.length >= 8;
+export const doPasswordsMatch = (password: string, confirmPassword: string): boolean => password === confirmPassword;

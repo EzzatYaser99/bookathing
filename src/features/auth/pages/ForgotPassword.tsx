@@ -1,39 +1,23 @@
-// Forgot Password Page - Similar to Angular Component
-// Handles password reset request
-
 import { useState } from 'react';
-import { Form, Button, Card, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { isValidEmail } from '../authUtils';
 
 const ForgotPassword = () => {
-  // Form state - Similar to Angular Reactive Forms
   const [email, setEmail] = useState('');
-
-  // UI state
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [validationError, setValidationError] = useState('');
 
-  // Handle input changes - Similar to Angular form control updates
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-
-    // Clear validation error when user starts typing
-    if (validationError) {
-      setValidationError('');
-    }
-
-    // Clear general error when user starts typing
-    if (error) {
-      setError('');
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    if (validationError) setValidationError('');
+    if (error) setError('');
   };
 
-  // Validate form
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     if (!email) {
       setValidationError('Email is required');
       return false;
@@ -47,11 +31,9 @@ const ForgotPassword = () => {
     return true;
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-    // Validate form before submission
     if (!validateForm()) {
       return;
     }
@@ -60,117 +42,70 @@ const ForgotPassword = () => {
     setError('');
     setSuccess(false);
 
-    try {
-      const response = await authService.forgotPassword({ email });
+    const response = await authService.forgotPassword({ email });
 
-      if (response.success) {
-        setSuccess(true);
-      } else {
-        setError(response.message || 'Failed to send reset link. Please try again.');
-      }
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+    if (response.success) {
+      setSuccess(true);
+    } else {
+      setError(response.message || 'Failed to send reset code.');
     }
+
+    setLoading(false);
   };
 
   return (
     <Container className="py-5">
       <Row className="justify-content-center">
         <Col md={6} lg={5}>
-          <Card className="shadow">
-            <Card.Body className="p-4">
+          <Card className="shadow-sm border-0">
+            <Card.Body className="p-4 p-md-5">
               <div className="text-center mb-4">
-                <h2 className="fw-bold">Forgot Password?</h2>
-                <p className="text-muted">
-                  {success
-                    ? 'Reset link sent successfully'
-                    : 'Enter your email to receive a password reset link'}
+                <h2 className="fw-bold mb-1">Forgot password?</h2>
+                <p className="text-muted mb-0">
+                  {success ? 'Reset code sent successfully' : 'Enter your email to receive a password reset code'}
                 </p>
               </div>
 
-              {/* Success Alert */}
-              {success && (
-                <Alert variant="success" className="mb-3">
-                  Password reset link has been sent to your email. Please check your inbox.
-                </Alert>
-              )}
-
-              {/* Error Alert */}
-              {error && (
-                <Alert variant="danger" className="mb-3">
-                  {error}
-                </Alert>
-              )}
+              {success && <Alert variant="success">A reset code has been sent to your email.</Alert>}
+              {error && <Alert variant="danger">{error}</Alert>}
 
               {!success ? (
-                <Form onSubmit={handleSubmit}>
-                  {/* Email Field */}
+                <Form onSubmit={handleSubmit} noValidate>
                   <Form.Group className="mb-3">
-                    <Form.Label htmlFor="email">Email Address</Form.Label>
+                    <Form.Label htmlFor="email">Email</Form.Label>
                     <Form.Control
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email"
                       value={email}
                       onChange={handleInputChange}
                       isInvalid={!!validationError}
                       disabled={loading}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {validationError}
-                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">{validationError}</Form.Control.Feedback>
                   </Form.Group>
 
-                  {/* Submit Button */}
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100 mb-3"
-                    disabled={loading}
-                  >
+                  <Button type="submit" variant="primary" className="w-100" disabled={loading}>
                     {loading ? (
                       <>
-                        <Spinner
-                          as="span"
-                          animation="border"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
-                          className="me-2"
-                        />
+                        <Spinner animation="border" size="sm" className="me-2" />
                         Sending...
                       </>
                     ) : (
-                      'Send Reset Link'
+                      'Send reset code'
                     )}
                   </Button>
-
-                  {/* Back to Login Link */}
-                  <div className="text-center">
-                    <Link to="/login" className="text-decoration-none">
-                      Back to Login
-                    </Link>
-                  </div>
                 </Form>
               ) : (
-                <div className="text-center">
-                  <Button
-                    variant="primary"
-                    className="w-100 mb-3"
-                    onClick={() => (window.location.href = '/login')}
-                  >
-                    Back to Login
-                  </Button>
-                  <div className="text-center">
-                    <Link to="/register" className="text-decoration-none">
-                      Create a new account
-                    </Link>
-                  </div>
+                <div className="d-grid gap-2">
+                  <Link to="/reset-password" className="btn btn-primary">Reset password</Link>
+                  <Link to="/login" className="btn btn-outline-secondary">Back to login</Link>
                 </div>
               )}
+
+              <div className="text-center mt-3">
+                <Link to="/login" className="text-decoration-none">Back to login</Link>
+              </div>
             </Card.Body>
           </Card>
         </Col>

@@ -1,6 +1,3 @@
-// AppRoutes - Similar to Angular Router Configuration
-// Defines all application routes
-
 import { Routes, Route } from 'react-router-dom';
 import Login from '../features/auth/pages/Login';
 import Register from '../features/auth/pages/Register';
@@ -13,23 +10,32 @@ import Profile from '../features/dashboard/pages/Profile';
 import Settings from '../features/dashboard/pages/Settings';
 import Home from '../features/browsing/pages/Home';
 import MovieDetails from '../features/browsing/pages/MovieDetails';
+import ShowtimesPage from '../features/booking/pages/ShowtimeSelectionPage';
+import SeatSelectionPage from '../features/booking/pages/SeatSelectionPage';
+import CheckoutPage from '../features/booking/pages/CheckoutPage';
+import PaymentPage from '../features/booking/pages/PaymentPage';
+import BookingConfirmationPage from '../features/booking/pages/BookingConfirmationPage';
+import OwnerDashboardPage from '../features/owner/pages/OwnerDashboardPage';
+import AdminDashboardPage from '../features/admin/pages/AdminDashboardPage';
 import NotFound from '../pages/NotFound';
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute, { RoleProtectedRoute } from './ProtectedRoute';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes - Browsing */}
       <Route path="/" element={<Home />} />
       <Route path="/movie/:id" element={<MovieDetails />} />
+      <Route path="/showtimes/:movieId" element={<ShowtimesPage />} />
+      <Route path="/booking/seats" element={<SeatSelectionPage />} />
+      <Route path="/booking/checkout" element={<CheckoutPage />} />
+      <Route path="/booking/payment" element={<PaymentPage />} />
+      <Route path="/booking/confirmation" element={<BookingConfirmationPage />} />
 
-      {/* Public Routes - Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* Protected Routes - Dashboard */}
       <Route
         path="/dashboard"
         element={
@@ -71,7 +77,24 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Catch-all Route */}
+      <Route
+        path="/owner/dashboard"
+        element={
+          <RoleProtectedRoute allowedRoles={['owner', 'admin']}>
+            <OwnerDashboardPage />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/dashboard"
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboardPage />
+          </RoleProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
