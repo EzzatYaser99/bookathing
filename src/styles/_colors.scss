@@ -1,0 +1,52 @@
+
+// ---- Backgrounds ----
+$content-bg: #fbfbfb;
+$overlay-bg: rgba(0, 0, 0, 0.5);
+$light-overlay-bg: rgba(0, 0, 0, 0.1);
+$surface: #ffffff;
+$sidebar-bg: #f8f9fa;
+
+// ---- Brand / Primary (Davur blue) ----
+$primary: #3b82f6;
+$primary-hover: #2563eb;
+$primary-dark: #101e63;
+$primary-tint: rgba(47, 76, 221, 0.1);
+$orange: #F8914FFF;
+$orange-hover: #F9A772FF;
+
+// ---- Accents (buttons, highlights, gradients) ----
+$accent-gold: #f7b00f;
+$accent-gold-hover: #f9c70a;
+$accent-purple: #8553ee;
+$accent-orange: #f25521;
+
+// ---- Text ----
+$text-primary: #3d4465;
+$text-secondary: #7e7e7e;
+$text-muted: #6c757d;
+$text-inverse: #ffffff;
+
+// ---- Borders & dividers ----
+$border-default: #eeeeee;
+$border-subtle: rgba(0, 0, 0, 0.08);
+
+// ---- Surfaces (hover/active states) ----
+$hover-bg: rgba(0, 0, 0, 0.05);
+$active-bg: rgba(0, 0, 0, 0.08);
+$shadow-light: rgba(0, 0, 0, 0.1);
+$shadow-medium: rgba(0, 0, 0, 0.3);
+
+// ---- Status ----
+$success: #2bc155;
+$success-hover: #239a43;
+$danger: #f72b50;
+$danger-hover-bg: rgba(247, 43, 80, 0.1);
+$warning: #ff6d4d;
+$info: #2781d5;
+
+// ---- Footer / header ----
+$footer-bg: #212529;
+$top-bar-green: #297f00;
+
+// ---- Components (spinner, etc.) ----
+$spinner-accent: #2bc155;

@@ -1,0 +1,91 @@
+// Typography
+$font-family-base: "Open Sans", "Segoe UI", sans-serif;
+
+// Border radius
+$border-radius-sm: 2px;
+$border-radius-md: 4px;
+$border-radius-lg: 8px;
+$border-radius-xl: 16px;
+$border-radius-2xl: 24px;
+$border-radius-circle: 100%;
+$border-radius-curvy: 999px;
+
+// Spacing
+$spacing-4: 4px;
+$spacing-8: 8px;
+$spacing-10: 10px;
+$spacing-12: 12px;
+$spacing-16: 16px;
+$spacing-20: 20px;
+$spacing-24: 24px;
+$spacing-32: 32px;
+$spacing-48: 48px;
+$spacing-64: 64px;
+
+// Margins
+$margin-4: 4px;
+$margin-8: 8px;
+$margin-12: 12px;
+$margin-16: 16px;
+$margin-20: 20px;
+$margin-24: 24px;
+$margin-32: 32px;
+$margin-48: 48px;
+$margin-64: 64px;
+
+// Padding
+$padding-4: 4px;
+$padding-8: 8px;
+$padding-12: 12px;
+$padding-16: 16px;
+$padding-20: 20px;
+$padding-24: 24px;
+$padding-32: 32px;
+$padding-48: 48px;
+$padding-64: 64px;
+
+// Font sizes
+$size-xxs: 2px;
+$size-xs: 4px;
+$size-sm: 6px;
+$size-md: 8px;
+$size-lg: 10px;
+$size-xl: 12px;
+$size-xxl: 14px;
+$size-3xl: 16px;
+$size-4xl: 18px;
+$size-5xl: 20px;
+$size-6xl: 22px;
+$size-7xl: 24px;
+$size-8xl: 26px;
+$size-9xl: 32px;
+$size-10xl: 48px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1175px;
+
+// Layout
+$navbar-height: $spacing-16 * 4;
+$sidebar-width: 250px;
+$header-height: 100px;
+$header-height-mobile: 90px;
+$page-gutter-sm: 12px;
+$page-gutter-md: 20px;
+$max-content-width: 1440px;
+
+// Z-index
+$z-overlay: 999;
+$z-sidebar: 1000;
+$z-navbar: 1001;
+$z-header: 1100;
+
+// Transitions
+$transition-base: 0.3s ease;
+$transition-fast: 0.2s ease;
+$ucc-nav-transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+$ease-standard: cubic-bezier(0.4, 0, 0.2, 1);

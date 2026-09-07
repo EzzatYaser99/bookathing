@@ -1,0 +1,5 @@
+// Main design system entrypoint using modern Sass modules
+@use './_variables' as *;
+@use './_colors' as *;
+@use './_mixins' as *;
+
