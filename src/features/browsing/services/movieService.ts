@@ -109,14 +109,4 @@ export const movieService = {
       return mockMovies.find((movie) => movie.id === movieId) ?? null;
     }
   },
-
-  async getPopularMovies() {
-    try {
-      const movies = await apiRequest<any>('/movies/popular');
-      const normalized = normalizeMovieList(movies);
-      return normalized.length > 0 ? normalized.slice(0, 4) : mockMovies.slice(0, 4);
-    } catch {
-      return mockMovies.slice(0, 4);
-    }
-  },
 };
